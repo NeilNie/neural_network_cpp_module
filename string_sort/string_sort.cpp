@@ -56,7 +56,7 @@ std::vector<std::string> get_one_million_cpp_strings() {
     auto random_length = get_random_int_generator(STRING_LEN_MIN, STRING_LEN_MAX);
 
     string_vec.reserve(one_million);
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < one_million; i++)
         string_vec.push_back(get_random_cpp_string(random_length()));
 
     return string_vec;
@@ -69,7 +69,7 @@ std::vector<const char*> get_one_million_c_strings() {
     auto random_length = get_random_int_generator(STRING_LEN_MIN, STRING_LEN_MAX);
     string_vec.reserve(one_million);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < one_million; i++)
         string_vec.push_back(malloc_random_c_string(random_length()));
 
     return string_vec;
@@ -125,7 +125,7 @@ void std_string_increasing_sort(std::vector<std::string> cpp_strings) {
         auto start = std::chrono::steady_clock::now();
         std::sort(cpp_strings.begin(), cpp_strings.end(), string_icompare_cpp);
         auto end = std::chrono::steady_clock::now();
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " microseconds" << "\n";
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
 
     std::cout << "==== end test ====" << "\n";
@@ -140,7 +140,7 @@ void std_string_decreasing_sort(std::vector<std::string> cpp_strings) {
         auto start = std::chrono::steady_clock::now();
         std::sort(cpp_strings.begin(), cpp_strings.end(), string_dcompare_cpp);
         auto end = std::chrono::steady_clock::now();
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " microseconds" << "\n";
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
     std::cout << "==== end test ====" << "\n";
 }
@@ -155,7 +155,7 @@ void c_string_increasing_sort(std::vector<const char *> c_strings) {
         auto start = std::chrono::steady_clock::now();
         std::sort(c_strings.begin(), c_strings.end(), c_string_icompare_cpp);
         auto end = std::chrono::steady_clock::now();
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " microseconds" << "\n";
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
 
     std::cout << "==== end test ====" << "\n";
@@ -170,7 +170,7 @@ void c_string_decreasing_sort(std::vector<const char *> c_strings) {
         auto start = std::chrono::steady_clock::now();
         std::sort(c_strings.begin(), c_strings.end(), c_string_dcompare_cpp);
         auto end = std::chrono::steady_clock::now();
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " microseconds" << "\n";
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
     std::cout << "==== end test ====" << "\n";
 }
@@ -181,11 +181,12 @@ void c_string_increasing_qsort(std::vector<const char *> c_strings) {
      */
     std::cout << "Sort c-string using qsort() increasing" << "\n";
 
-    char *str_pointers[c_strings.size()];
-    for (int i = 0; i < c_strings.size(); i++)
-        str_pointers[i] = (char *)c_strings[i];
-
     for (auto i = 0; i < 3; i++) {
+
+        char *str_pointers[c_strings.size()];
+        for (int i = 0; i < c_strings.size(); i++)
+            str_pointers[i] = (char *)c_strings[i];
+
         auto start = std::chrono::steady_clock::now();
 
         qsort(str_pointers,
@@ -206,11 +207,12 @@ void c_string_decreasing_qsort(std::vector<const char *> c_strings) {
      */
     std::cout << "Sort c-string using sort() decreasing" << "\n";
 
-    char *str_pointers[c_strings.size()];
-    for (int i = 0; i < c_strings.size(); i++)
-        str_pointers[i] = (char *)c_strings[i];
-
     for (auto i = 0; i < 3; i++) {
+        
+        char *str_pointers[c_strings.size()];
+        for (int i = 0; i < c_strings.size(); i++)
+            str_pointers[i] = (char *)c_strings[i];
+
         auto start = std::chrono::steady_clock::now();
 
         qsort(str_pointers,
