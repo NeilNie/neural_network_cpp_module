@@ -6,6 +6,53 @@
 #include <cstring>
 #include <typeinfo>
 
+/*
+ * ***************** Discussion on the Results *****************
+ *
+ *  Results Table
+ *  +-------------+-----------+----------+---------------------+
+ *  | Type        | Algorithm | Order    | Time (milliseconds) |
+ *  +-------------+-----------+----------+---------------------+
+ *  | std::string | sort()    | Increase | 469                 |
+ *  +-------------+-----------+----------+---------------------+
+ *  | std::string | sort()    | Decrease | 466                 |
+ *  +-------------+-----------+----------+---------------------+
+ *  | std::string | qsort()   | Increase | 546                 |
+ *  +-------------+-----------+----------+---------------------+
+ *  | std::string | qsort()   | Decrease | 541                 |
+ *  +-------------+-----------+----------+---------------------+
+ *  | c-string    | sort()    | Increase | 345                 |
+ *  +-------------+-----------+----------+---------------------+
+ *  | c-string    | sort()    | Decrease | 352                 |
+ *  +-------------+-----------+----------+---------------------+
+ *  | c-string    | qsort()   | Increase | 300                 |
+ *  +-------------+-----------+----------+---------------------+
+ *  | c-string    | qsort()   | Decrease | 314                 |
+ *  +-------------+-----------+----------+---------------------+
+ *
+ *  The program is compiled using -O2 flag to improve the efficiency
+ *  Each sorting algorithm is run three times and the average
+ *  runtime captured by high_resolution_clock is reported in the
+ *  table above.
+ *
+ *  For std::string() we can see that std::sort() is much faster
+ *  than using the qsort() method. The difference is almost 20%.
+ *  This observation is consistent with our expectation that sort()
+ *  is better for sorting containers in c++ than the qsort()
+ *  method.
+ *
+ *  For c style strings, we see that sort() is actually slower
+ *  than qsort(). Although this result is surprising, it also
+ *  makes sense. C strings have less overhead, and qsort() is
+ *  meant to be used in C.
+ *
+ *  Between the std::string and the c-string, we can see that
+ *  given one million randomly generated words, sorting the
+ *  C strings is considerably faster than std::string().
+ *  This also makes sense since std::string() has slightly
+ *  more overhead than just the character arrays in c strings.
+ *
+ */
 
 static const char alphanum[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 static const int one_million = 1'000'000;
@@ -116,60 +163,64 @@ int c_string_dcompare_cpp(const char* s1, const char* s2) {
 
 // =====================================================================================================================
 
-void std_string_increasing_sort(std::vector<std::string> cpp_strings) {
+void std_string_increasing_sort(const std::vector<std::string>& cpp_strings) {
     /*
      * Make a copy and sort
      */
     std::cout << "Sort std::string using sort() increasing" << "\n";
     for (auto i = 0; i < 3; i++) {
-        auto start = std::chrono::steady_clock::now();
-        std::sort(cpp_strings.begin(), cpp_strings.end(), string_icompare_cpp);
-        auto end = std::chrono::steady_clock::now();
+        auto string_copy = cpp_strings;
+        auto start = std::chrono::high_resolution_clock::now();
+        std::sort(string_copy.begin(), string_copy.end(), string_icompare_cpp);
+        auto end = std::chrono::high_resolution_clock::now();
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
 
     std::cout << "==== end test ====" << "\n";
 }
 
-void std_string_decreasing_sort(std::vector<std::string> cpp_strings) {
+void std_string_decreasing_sort(const std::vector<std::string>& cpp_strings) {
     /*
      * Make a copy and sort
      */
     std::cout << "Sort std::string using sort() increasing" << "\n";
     for (auto i = 0; i < 3; i++) {
-        auto start = std::chrono::steady_clock::now();
-        std::sort(cpp_strings.begin(), cpp_strings.end(), string_dcompare_cpp);
-        auto end = std::chrono::steady_clock::now();
+        auto string_copy = cpp_strings;
+        auto start = std::chrono::high_resolution_clock::now();
+        std::sort(string_copy.begin(), string_copy.end(), string_dcompare_cpp);
+        auto end = std::chrono::high_resolution_clock::now();
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
     std::cout << "==== end test ====" << "\n";
 }
 
-void c_string_increasing_sort(std::vector<const char *> c_strings) {
+void c_string_increasing_sort(const std::vector<const char *>& c_strings) {
     /*
      * Make a copy and sort
      */
     std::cout << "Sort c-string using sort() increasing" << "\n";
 
     for (auto i = 0; i < 3; i++) {
-        auto start = std::chrono::steady_clock::now();
-        std::sort(c_strings.begin(), c_strings.end(), c_string_icompare_cpp);
-        auto end = std::chrono::steady_clock::now();
+        auto string_copy = c_strings;
+        auto start = std::chrono::high_resolution_clock::now();
+        std::sort(string_copy.begin(), string_copy.end(), c_string_icompare_cpp);
+        auto end = std::chrono::high_resolution_clock::now();
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
 
     std::cout << "==== end test ====" << "\n";
 }
 
-void c_string_decreasing_sort(std::vector<const char *> c_strings) {
+void c_string_decreasing_sort(const std::vector<const char *>& c_strings) {
     /*
      * Make a copy and sort
      */
     std::cout << "Sort c-string using sort() decreasing" << "\n";
     for (auto i = 0; i < 3; i++) {
-        auto start = std::chrono::steady_clock::now();
-        std::sort(c_strings.begin(), c_strings.end(), c_string_dcompare_cpp);
-        auto end = std::chrono::steady_clock::now();
+        auto string_copy = c_strings;
+        auto start = std::chrono::high_resolution_clock::now();
+        std::sort(string_copy.begin(), string_copy.end(), c_string_dcompare_cpp);
+        auto end = std::chrono::high_resolution_clock::now();
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
     std::cout << "==== end test ====" << "\n";
@@ -184,17 +235,17 @@ void c_string_increasing_qsort(std::vector<const char *> c_strings) {
     for (auto i = 0; i < 3; i++) {
 
         char *str_pointers[c_strings.size()];
-        for (int i = 0; i < c_strings.size(); i++)
-            str_pointers[i] = (char *)c_strings[i];
+        for (auto j = 0; j < c_strings.size(); j++)
+            str_pointers[j] = (char *)c_strings[j];
 
-        auto start = std::chrono::steady_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
 
         qsort(str_pointers,
               c_strings.size(),
               sizeof(char *),
               string_pointer_icompare_c);
 
-        auto end = std::chrono::steady_clock::now();
+        auto end = std::chrono::high_resolution_clock::now();
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
 
@@ -205,22 +256,70 @@ void c_string_decreasing_qsort(std::vector<const char *> c_strings) {
     /*
      * Make a copy and sort
      */
-    std::cout << "Sort c-string using sort() decreasing" << "\n";
+    std::cout << "Sort c-string using qsort() decreasing" << "\n";
 
     for (auto i = 0; i < 3; i++) {
-        
-        char *str_pointers[c_strings.size()];
-        for (int i = 0; i < c_strings.size(); i++)
-            str_pointers[i] = (char *)c_strings[i];
 
-        auto start = std::chrono::steady_clock::now();
+        char *str_pointers[c_strings.size()];
+        for (auto j = 0; j < c_strings.size(); j++)
+            str_pointers[j] = (char *)c_strings[j];
+
+        auto start = std::chrono::high_resolution_clock::now();
 
         qsort(str_pointers,
               c_strings.size(),
               sizeof(char *),
               string_pointer_dcompare_c);
 
-        auto end = std::chrono::steady_clock::now();
+        auto end = std::chrono::high_resolution_clock::now();
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
+    }
+
+    std::cout << "==== end test ====" << "\n";
+}
+
+void std_string_increasing_qsort(std::vector<std::string> c_strings) {
+    std::cout << "Sort c-string using qsort() decreasing" << "\n";
+
+    for (auto i = 0; i < 3; i++) {
+
+        std::vector<std::string const*> str_pointers;
+        str_pointers.reserve(c_strings.size());
+        for(const auto& item : c_strings)
+            str_pointers.push_back(&item);
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+        qsort(&str_pointers[0],
+              str_pointers.size(),
+              sizeof(str_pointers[0]),
+              string_pointer_icompare_cpp);
+
+        auto end = std::chrono::high_resolution_clock::now();
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
+    }
+
+    std::cout << "==== end test ====" << "\n";
+}
+
+void std_string_decreasing_qsort(std::vector<std::string> c_strings) {
+    std::cout << "Sort c-string using qsort() decreasing" << "\n";
+
+    for (auto i = 0; i < 3; i++) {
+
+        std::vector<std::string const*> str_pointers_2;
+        str_pointers_2.reserve(c_strings.size());
+        for(const auto& item : c_strings)
+            str_pointers_2.push_back(&item);
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+        qsort(&str_pointers_2[0],
+              str_pointers_2.size(),
+              sizeof(str_pointers_2[0]),
+              string_pointer_dcompare_cpp);
+
+        auto end = std::chrono::high_resolution_clock::now();
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds" << "\n";
     }
 
@@ -241,24 +340,10 @@ int main(int argc, char *argv[]) {
     std_string_decreasing_sort(cpp_strings);
 
     // Sort the std::string using qsort() increasing
-    std::vector<std::string const*> str_pointers;
-    str_pointers.reserve(cpp_strings.size());
-    for(const auto& item : cpp_strings)
-        str_pointers.push_back(&item);
-    qsort(&str_pointers[0],
-          str_pointers.size(),
-          sizeof(str_pointers[0]),
-          string_pointer_icompare_cpp);
+    std_string_increasing_qsort(cpp_strings);
 
     // Sort the std::string using qsort() decreasing
-    std::vector<std::string const*> str_pointers_2;
-    str_pointers_2.reserve(cpp_strings.size());
-    for(const auto& item : cpp_strings)
-        str_pointers_2.push_back(&item);
-    qsort(&str_pointers_2[0],
-          str_pointers_2.size(),
-          sizeof(str_pointers_2[0]),
-          string_pointer_dcompare_cpp);
+    std_string_decreasing_qsort(cpp_strings);
 
     // Sort the std::string using sort() increasing
     c_string_increasing_sort(c_strings);
@@ -276,4 +361,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
