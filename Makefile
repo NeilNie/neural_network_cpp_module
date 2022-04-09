@@ -28,8 +28,6 @@ TEST_OBJECTS = $(TEST_SOURCE:.cpp=.o)
 OBJECTS = $(LIB_OBJECTS) $(TEST_OBJECTS)
 TESTS = $(TEST_SOURCE:.cpp=)
 
-$(OBJECTS) : %.o : $$(call parse_mod_deps,$$*.cpp)
-
 $(LIB): $(LIB_OBJECTS)
 	ar rcs $@ $^
 	ranlib $@
@@ -38,6 +36,8 @@ $(LIB): $(LIB_OBJECTS)
 tests: $(TESTS)
 
 $(TESTS) : % : %.o $(LIB)
+
+$(OBJECTS) : %.o : $$(call parse_mod_deps,$$*.cpp)
 
 .PHONY: clean
 clean:
