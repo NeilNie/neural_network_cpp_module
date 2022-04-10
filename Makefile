@@ -8,11 +8,12 @@ sed_sys_mods = $(shell sed -En 's/^[[:space:]]*import[[:space:]]+<(.*)>[[:space:
 sed_local_mods = $(shell sed -En 's/^[[:space:]]*(import|module)[[:space:]]+([[:alpha:]].*)[[:space:]]*\;/\2/p' $(1) 2> /dev/null)
 grep_mod_exporter = $(shell grep -REl '^[[:space:]]*export[[:space:]]+module[[:space:]]+$(1)[[:space:]]*\;' . | head -n1)
 
-find_sys_dir = $(shell echo '\#include<$(mod)>' | g++-11 -M -xc++ - | tr " " "\n" | grep -E '/$(mod)$$')
+hash := \# # escaping '#' inline seems to break things on Linux
+find_sys_dir = $(shell echo '$(hash)include<$(mod)>' | g++-11 -M -xc++ - | tr " " "\n" | grep -E '/$(mod)$$')
 find_mods = $(call sed_local_mods,$(1)) $(foreach mod,$(call sed_sys_mods,$(1)),$(find_sys_dir))
 parse_mod_deps = $(addprefix $(MODS_DIR)/, $(addsuffix .gcm, $(call find_mods,$(1))))
 
-$(MODS_DIR)//%.gcm:
+$(MODS_DIR)//%.gcm: # double forward-slash hack distinguishes system headers (which we format in this way)
 	$(CXX) $(CXXFLAGS)   -xc++-system-header $(basename $(notdir $@))
 
 .SECONDEXPANSION:
