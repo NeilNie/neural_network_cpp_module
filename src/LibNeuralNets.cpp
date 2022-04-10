@@ -1,28 +1,30 @@
 export module LibNeuralNets;
 
-export class Module {
+export {
+    class Module {
 
-};
+    };
 
-export class Layer {
+    class Layer {
 
-public:
-    virtual ~Layer();
+    public:
+        virtual ~Layer();
 
-};
+    };
 
-export class Conv2d {
+    class Conv2d {
 
-};
+    };
 
-export class Dense {
+    class Dense {
 
-};
+    };
 
-export class ReLU {
+    class ReLU {
 
-};
+    };
 
-export class Sigmoid {
+    class Sigmoid {
 
-};
+    };
+}
