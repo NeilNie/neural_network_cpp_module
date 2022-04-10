@@ -3,22 +3,22 @@ CC = g++-11
 CXXFLAGS = -std=c++20 -fmodules-ts
 
 MODS_DIR = gcm.cache
-SYS_MODS_DIR = $(MODS_DIR)/./usr/include/c++/11
 
-sed_sys_mods = $(shell sed -En 's/^\s*import\s+<(.*)>\s*\;/\1/p' $(1) 2> /dev/null)
-sed_local_mods = $(shell sed -En 's/^\s*(import|module)\s+(\w.*)\s*\;/\2/p' $(1) 2> /dev/null)
-grep_mod_exporter = $(shell grep -REl '^\s*export\s+module\s+$(1)\s*\;' . | head -n1)
+sed_sys_mods = $(shell sed -En 's/^[[:space:]]*import[[:space:]]+<(.*)>[[:space:]]*\;/\1/p' $(1) 2> /dev/null)
+sed_local_mods = $(shell sed -En 's/^[[:space:]]*(import|module)[[:space:]]+([[:alpha:]].*)[[:space:]]*\;/\2/p' $(1) 2> /dev/null)
+grep_mod_exporter = $(shell grep -REl '^[[:space:]]*export[[:space:]]+module[[:space:]]+$(1)[[:space:]]*\;' . | head -n1)
 
-parse_mod_deps = $(addprefix $(MODS_DIR)/, $(addsuffix .gcm, $(call sed_local_mods,$(1)))) \
-                 $(addprefix $(SYS_MODS_DIR)/, $(addsuffix .gcm, $(call sed_sys_mods,$(1))))
+find_sys_dir = $(shell echo '\#include<$(mod)>' | g++-11 -M -xc++ - | tr " " "\n" | grep -E '/$(mod)$$')
+find_mods = $(call sed_local_mods,$(1)) $(foreach mod,$(call sed_sys_mods,$(1)),$(find_sys_dir))
+parse_mod_deps = $(addprefix $(MODS_DIR)/, $(addsuffix .gcm, $(call find_mods,$(1))))
+
+$(MODS_DIR)//%.gcm:
+	$(CXX) $(CXXFLAGS)   -xc++-system-header $(basename $(notdir $@))
 
 .SECONDEXPANSION:
-gcm.cache/%.gcm : $$(call grep_mod_exporter,$$*) $$(call parse_mod_deps,$$(call grep_mod_exporter,$$*))
+$(MODS_DIR)/%.gcm : $$(call grep_mod_exporter,$$*) $$(call parse_mod_deps,$$(call grep_mod_exporter,$$*))
 	$(eval EXPORTER := $(call grep_mod_exporter,$(basename $(notdir $@))))
 	$(CXX) $(CXXFLAGS)   -c -o $(patsubst %.cpp,%.o,$(EXPORTER)) $(EXPORTER)
-
-$(SYS_MODS_DIR)/%.gcm:
-	$(CXX) $(CXXFLAGS) -xc++-system-header $(basename $(notdir $@))
 
 LIB_SOURCE = $(shell find src -name '*.cpp')
 LIB_OBJECTS = $(LIB_SOURCE:.cpp=.o)
