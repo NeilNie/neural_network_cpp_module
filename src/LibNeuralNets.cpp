@@ -1,6 +1,6 @@
 module;
 
-// importing vector seems to break module export, so we'll just include it
+// importing <vector> seems to break module export, so we'll just include it
 #include <vector>
 
 import <string>;

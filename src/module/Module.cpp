@@ -4,11 +4,13 @@
 
 module;
 
+// importing <string> breaks things on macOS
+#include <string>
+
 #include <H5Cpp.h>
 
 import <iostream>;
 import <vector>;
-import <string>;
 import <memory>;
 import <ostream>;
 
@@ -22,7 +24,7 @@ static constexpr char kernel1_path[] = "/model_weights/dense_1/dense_1/kernel:0"
 template <const char *DataPath>
 static void read_1D_data(const std::string& path, std::vector<float>& out)
 {
-    H5::H5File file(path, H5F_ACC_RDONLY);
+    H5::H5File file(path.c_str(), H5F_ACC_RDONLY);
     H5::DataSet dataset = file.openDataSet(DataPath);
     H5::DataSpace dataspace = dataset.getSpace();
 
@@ -38,7 +40,7 @@ template <const char *DataPath>
 static void read_2D_data(const std::string& path,
                          std::vector<std::vector<float>>& out)
 {
-    H5::H5File file(path, H5F_ACC_RDONLY);
+    H5::H5File file(path.c_str(), H5F_ACC_RDONLY);
     H5::DataSet dataset = file.openDataSet(DataPath);
     H5::DataSpace dataspace = dataset.getSpace();
 

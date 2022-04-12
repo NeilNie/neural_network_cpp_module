@@ -1,9 +1,9 @@
 CXX = g++-11
 CC = g++-11
 INCLUDES = -I /opt/homebrew/include -I externals/HighFive/include -I externals/H5Easy
-CXXFLAGS = -std=c++20 -O0 -fmodules-ts $(shell pkg-config --cflags hdf5) $(INCLUDES)
-LDLIBS = $(shell pkg-config --libs-only-l --libs-only-other hdf5) -lhdf5_cpp
-LDFLAGS = $(shell pkg-config --libs-only-L --libs-only-other hdf5)
+CXXFLAGS = -std=c++20 -O0 -fmodules-ts $(shell pkg-config --cflags hdf5 2> /dev/null) $(INCLUDES)
+LDLIBS = -lhdf5 -lhdf5_cpp
+LDFLAGS = -L /opt/homebrew/lib $(shell pkg-config --libs-only-L --libs-only-other hdf5 2> /dev/null)
 
 MODS_DIR = gcm.cache
 
