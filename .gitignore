@@ -1,2 +1,4 @@
 .idea
 src/cmake-build-debug
+*.o
+*.gcm
