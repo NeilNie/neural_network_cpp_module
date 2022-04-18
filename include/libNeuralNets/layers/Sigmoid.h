@@ -5,10 +5,11 @@
 #ifndef FINAL_PROJECT_SIGMOID_H
 #define FINAL_PROJECT_SIGMOID_H
 
+#include "Layer.h"
 
-class Sigmoid {
-
-};
+//class Sigmoid: Layer {
+//
+//};
 
 
 #endif //FINAL_PROJECT_SIGMOID_H

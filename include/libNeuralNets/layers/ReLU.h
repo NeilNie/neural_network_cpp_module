@@ -5,10 +5,11 @@
 #ifndef FINAL_PROJECT_RELU_H
 #define FINAL_PROJECT_RELU_H
 
+#include "Layer.h"
 
-class ReLU {
-
-};
+//class ReLU: Layer {
+//
+//};
 
 
 #endif //FINAL_PROJECT_RELU_H
