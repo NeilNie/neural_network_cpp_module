@@ -2,12 +2,38 @@
 // Created by Yongyang Nie on 4/1/22.
 //
 
-#include <vector>
-#include <tensor.h>
-#include <iostream>
 #include <stdexcept>
+#include "libNeuralNets/module/Module.h"
 
 
+static constexpr char bias0_path[] = "/model_weights/dense/dense/bias:0";
+static constexpr char kernel0_path[] = "/model_weights/dense/dense/kernel:0";
+static constexpr char bias1_path[] = "/model_weights/dense_1/dense_1/bias:0";
+static constexpr char kernel1_path[] = "/model_weights/dense_1/dense_1/kernel:0";
+
+
+int main()
+{
+    std::vector<float> bias0_;
+    std::vector<std::vector<float>> kernel0_;
+    std::vector<float> bias1_;
+    std::vector<std::vector<float>> kernel1_;
+    std::string path = "libNeuralNets/module/trained_v1.h5";
+    Module::read_1D_data<bias0_path>(path, bias0_);
+    Module::read_2D_data<kernel0_path>(path, kernel0_);
+    Module::read_1D_data<bias1_path>(path, bias1_);
+    Module::read_2D_data<kernel1_path>(path, kernel1_);
+}
+
+
+
+
+
+
+
+
+
+/*
 using namespace taco;
 
 void try_taco() {
@@ -34,4 +60,4 @@ int main() {
     std::vector<float> input = {0, 1, 2, 3, 4, 5};
     auto a = populate_matrix(input, 3, 2);
     return 0;
-}
+} */
