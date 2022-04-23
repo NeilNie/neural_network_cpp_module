@@ -17,5 +17,4 @@ class Sigmoid: public Layer {
         // return
         return matExp;
     }
-
 };

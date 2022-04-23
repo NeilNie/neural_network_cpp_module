@@ -3,23 +3,18 @@
 //
 
 #include "libNeuralNets/layers/Layer.h"
+#include "libNeuralNets/layers/Dense.h"
 
-class Dense: public Layer {
+Eigen::MatrixX<float> Dense::forward(Eigen::MatrixX<float> &input) {
 
-    Eigen::MatrixX<float> forward(Eigen::MatrixX<float> &input) override {
-
-        // check for sizes
-        if (input.rows() != weights.rows()) {
-            throw std::invalid_argument("Input matrix size and weights size mismatch");
-        }
-
-        // matrix multiply
-        Eigen::MatrixX<float> output = weights.transpose() * input + biases;
-
-        // return
-        return output;
+    // check for sizes
+    if (input.rows() != weights.rows()) {
+        throw std::invalid_argument("Input matrix size and weights size mismatch");
     }
 
-};
+    // matrix multiply
+    Eigen::MatrixX<float> output = weights.transpose() * input + biases;
 
-
+    // return
+    return output;
+}
