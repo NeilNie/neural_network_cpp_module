@@ -3,18 +3,15 @@
 //
 
 #include <unsupported/Eigen/MatrixFunctions>
-#include "libNeuralNets/layers/Layer.h"
+#include "../../include/libNeuralNets/layers/Sigmoid.h"
 
-class Sigmoid: public Layer {
+Eigen::MatrixX<float> Sigmoid::forward(Eigen::MatrixX<float> &input) {
 
-    Eigen::MatrixX<float> forward(Eigen::MatrixX<float> &input) override {
+    // compute the sigmoid function
+    Eigen::MatrixX<float> matExp;
+    input.exp().evalTo(matExp);
+    matExp.array() = 1.f / (matExp.array() + 1.f);
 
-        // compute the sigmoid function
-        Eigen::MatrixX<float> matExp;
-        input.exp().evalTo(matExp);
-        matExp.array() = 1.f / (matExp.array() + 1.f);
-
-        // return
-        return matExp;
-    }
-};
+    // return
+    return matExp;
+}

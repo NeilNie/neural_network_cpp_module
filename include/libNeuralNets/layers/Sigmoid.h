@@ -7,9 +7,11 @@
 
 #include "Layer.h"
 
-//class Sigmoid: Layer {
-//
-//};
+class Sigmoid: public Layer {
+
+public:
+    Eigen::MatrixX<float> forward(Eigen::MatrixX<float> &input) override;
+};
 
 
 #endif //FINAL_PROJECT_SIGMOID_H

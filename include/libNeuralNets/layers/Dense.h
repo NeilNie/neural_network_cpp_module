@@ -5,11 +5,19 @@
 #ifndef FINAL_PROJECT_DENSE_H
 #define FINAL_PROJECT_DENSE_H
 
-#include "libNeuralNets/layers/Layer.h"
+
+#include "Layer.h"
 
 class Dense: public Layer {
 
 public:
+
+    // instance initializer
+    Dense(const std::string& layer_name,
+          const Eigen::MatrixXf &init_weights,
+          const Eigen::VectorXf &init_biases);
+
+    // forward method override
     Eigen::MatrixX<float> forward(Eigen::MatrixX<float> &input) override;
 
 };

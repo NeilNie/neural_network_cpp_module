@@ -3,7 +3,7 @@
 //
 
 #include <stdexcept>
-#include "libNeuralNets/module/Module.h"
+#include "../include/libNeuralNets/module/Module.h"
 
 
 static constexpr char bias0_path[] = "/model_weights/dense/dense/bias:0";
@@ -18,11 +18,10 @@ int main()
     std::vector<std::vector<float>> kernel0_;
     std::vector<float> bias1_;
     std::vector<std::vector<float>> kernel1_;
-    std::string path = "libNeuralNets/module/trained_v1.h5";
-    Module::read_1D_data<bias0_path>(path, bias0_);
-    Module::read_2D_data<kernel0_path>(path, kernel0_);
-    Module::read_1D_data<bias1_path>(path, bias1_);
-    Module::read_2D_data<kernel1_path>(path, kernel1_);
+    std::string path = "libNeuralNets/trained_v1.h5";
+    std::vector<std::string> layers{"dense", "sigmoid", "dense", "sigmoid", "dense"};
+
+    Module neural_net = Module(path, layers);
 }
 
 
