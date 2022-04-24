@@ -20,10 +20,11 @@ class Module {
 public:
 
     // instance variables
-    std::vector<std::string> layers_names;
+    std::vector<std::string> layer_names;
     std::vector<Layer> layers;
-    explicit Module(std::string model_path, std::vector<std::string> layer_names);
+    explicit Module(const std::string& model_path, const std::vector<std::string>& names);
     explicit Module(std::vector<Layer> layers);
+    Eigen::MatrixXf forward(const Eigen::MatrixXf& input);
 
     ~Module();
 
@@ -101,7 +102,11 @@ public:
         std::vector<float> out;
         out.resize(dataspace.getSimpleExtentNpoints());
         dataset.read(out.data(), H5::PredType::IEEE_F32LE);
-        out_vector = Eigen::VectorXf(out.data());
+        out_vector = Eigen::VectorXf();
+        out_vector.resize(out.size());
+
+        for (auto i = 0; i < out.size(); ++i)
+            out_vector[i] = out[i];
 
         dataspace.close();
         dataset.close();
