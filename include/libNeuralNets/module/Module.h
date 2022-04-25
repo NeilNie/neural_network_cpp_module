@@ -23,9 +23,10 @@ public:
 
     // instance variables
     std::vector<std::string> layer_names;
-    std::vector<Layer> layers;
+    std::vector<Layer *> layers;
     explicit Module(const std::string& model_path, const std::vector<std::string>& names);
     explicit Module(std::vector<Layer> layers);
+    ~Module();
     nn::Mat<float> forward(const nn::Mat<float>& input);
 
     static void read_txt_data_to_matrix(
@@ -67,7 +68,7 @@ public:
 
         for (auto i = 0; i < out.n_rows(); i++)
             for (auto j = 0; j < out.n_cols(); j++)
-                out(0, 0) = data[i * out.n_cols() + j]; //
+                out(i, j) = data[i * out.n_cols() + j]; //
 
         if (verbose)
             std::cout << "Finished loading" << "\n";

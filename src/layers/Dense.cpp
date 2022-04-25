@@ -3,7 +3,6 @@
 //
 
 
-#include <Eigen/Dense>
 #include "../../include/libNeuralNets/layers/Dense.h"
 
 nn::Mat<float> Dense::forward(nn::Mat<float> &input) {
@@ -13,7 +12,7 @@ nn::Mat<float> Dense::forward(nn::Mat<float> &input) {
     }
 
     // check for sizes
-    if (input.n_rows() != weights.n_cols()) {
+    if (input.n_rows() != weights.n_rows()) {
         throw std::invalid_argument("Input matrix size and weights size mismatch");
     }
 

@@ -5,6 +5,18 @@
 #include <stdexcept>
 #include "../include/libNeuralNets/module/Module.h"
 
+int main() {
+
+    std::string path = "/Users/neilnie/model/";
+    std::vector<std::string> layers{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
+
+    nn::Mat<float> input(784, 1, 0);
+    Module neural_net = Module(path, layers);
+
+     std::cout << "Running forward feed..." << "\n";
+     auto output = neural_net.forward(input);
+     std::cout << "Finished" << "\n";
+}
 
 void test_mat_mult_add() {
 
@@ -60,6 +72,7 @@ void test_mat_mult_add() {
     std::cout << a + c << std::endl;
 }
 
+/**
 int main() {
 
     std::string path = "/Users/shannon/Documents/COMSW4995_final_project/data/model/";
@@ -67,3 +80,5 @@ int main() {
 
     Module neural_net = Module(path, layers);
 }
+*/
+
