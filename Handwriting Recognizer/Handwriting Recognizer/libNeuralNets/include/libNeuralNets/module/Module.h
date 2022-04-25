@@ -11,7 +11,6 @@
 #include <memory>
 #include <ostream>
 #include <fstream>
-#include <boost/filesystem.hpp>
 #include "../layers/Layer.h"
 #include "../layers/Dense.h"
 #include "../layers/Sigmoid.h"
