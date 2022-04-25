@@ -7,7 +7,13 @@
 
 int main() {
 
-    std::cout << "hello world" << std::endl;
+    std::string path = "/Users/neilnie/model/";
+    std::vector<std::string> layers{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
+
+    Module neural_net = Module(path, layers);
+}
+
+void test_mat_mult() {
 
     nn::Mat<float> a(2, 3, 0);
     nn::Mat<float> b(3, 2, 0);
@@ -23,8 +29,4 @@ int main() {
 
     std::cout << a * b << std::endl;
 
-    std::string path = "/Users/neilnie/model/";
-    std::vector<std::string> layers{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
-
-    Module neural_net = Module(path, layers);
 }
