@@ -32,32 +32,28 @@ public:
             const std::string& path,
             const std::string& data_path,
             Eigen::MatrixX<float>& out,
-            bool verbose=false) {
+            bool verbose=true) {
 
         if (verbose) {
             std::cout << "Begin loading..." << "\n";
         }
 
-//        boost::filesystem::path _dir (path);
-//        boost::filesystem::path _file (data_path);
-        std::ifstream file(path + data_path);
-
         if (verbose) {
             std::cout << "loading from file: " << path + data_path << "\n";
         }
 
+        std::ifstream file(path + data_path);
         std::string str;
         int count = 0;
 
         int rows, cols;
         std::vector<float> data;
         while (std::getline(file, str)) {
-
             float line_data = std::strtof(str.c_str(), nullptr);
             if (count == 0) {
-                rows = (int)line_data;
+                rows = (int) line_data;
             } else if (count == 1) {
-                cols = (int)line_data;
+                cols = (int) line_data;
             } else {
                 data.push_back(line_data);
             }
@@ -69,9 +65,12 @@ public:
         }
 
         out.resize(rows, cols);
-        for (Eigen::Index i = 0; i < out.rows(); ++i)
-            for (Eigen::Index j = 0; j < out.cols(); ++j)
-                out(i, j) = data[i * out.rows() + j];
+
+        for (Eigen::Index i = 0; i < out.rows(); i++) {
+            for (Eigen::Index j = 0; j < out.cols(); j++) {
+                out(0, 0) = data[i * out.cols() + j]; //
+            }
+        }
 
         if (verbose) {
             std::cout << "Finished loading" << "\n";

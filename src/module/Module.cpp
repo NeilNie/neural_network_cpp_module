@@ -17,14 +17,15 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
 
         std::cout << "Loading layer: " << name << "\n";
 
-        std::string bias_path = name + "_bias";
-        std::string weights_path = name + "_weights";
-        Eigen::VectorXf bias;
-        Eigen::MatrixXf weights;
-        Module::read_2D_data_to_matrix(model_path, weights_path, weights);
-        Module::read_1D_vector(model_path, bias_path, bias);
+        std::string bias_path = name + "_bias.txt";
+        std::string weights_path = name + "_weights.txt";
 
         if (name.find("dense") != std::string::npos) {
+            Eigen::MatrixXf bias;
+            Eigen::MatrixXf weights;
+
+            Module::read_2D_data_to_matrix(model_path, weights_path, weights);
+            Module::read_2D_data_to_matrix(model_path, bias_path, bias);
             auto layer = Dense(name, weights, bias);
             layers.push_back(layer);
         } else if  (name.find("sigmoid") != std::string::npos) {
