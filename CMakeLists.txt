@@ -11,6 +11,7 @@ find_package (Boost 1.78.0 REQUIRED)
 link_directories()
 
 add_executable(lib_test tests/test_libNeuralNets.cpp
+        src/libNeuralNets.h
         include/libNeuralNets/layers/Sigmoid.h
         include/libNeuralNets/layers/Dense.h
         include/libNeuralNets/layers/Layer.h
