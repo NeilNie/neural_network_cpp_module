@@ -4,20 +4,20 @@
 
 module LibNeuralNets;
 
-class Dense: public Layer {
+import <stdexcept>;
 
-    Eigen::MatrixX<float> forward(Eigen::MatrixX<float> &input) override {
+using namespace nn;
 
-        // check for sizes
-        if (input.rows() != weights.rows()) {
-            throw std::invalid_argument("Input matrix size and weights size mismatch");
-        }
+Mat<float> Dense::forward(Mat<float> &input) {
 
-        // matrix multiply
-        Eigen::MatrixX<float> output = weights.transpose() * input + biases;
-
-        // return
-        return output;
+    // check for sizes
+    if (input.n_rows() != weights.n_rows()) {
+        throw std::invalid_argument("Input matrix size and weights size mismatch");
     }
 
-};
+    // matrix multiply
+    Mat<float> output = weights.t() * input + biases;
+
+    // return
+    return output;
+}

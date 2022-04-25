@@ -19,7 +19,6 @@ export namespace nn {
  
     template <class T>
     class Mat {
-
     public:
         // constructors
         Mat()
@@ -301,25 +300,31 @@ export namespace nn {
     };
 
     class Layer {
-
     public:
-        virtual ~Layer();
+        int in_dim;
+        int out_dim;
+        Mat<float> weights;
+        Mat<float> biases;
 
+        virtual ~Layer();
+        virtual Mat<float> forward(Mat<float>& input);
     };
 
     class Conv2d {
 
     };
 
-    class Dense {
-
+    class Dense : public Layer {
+    public:
+        Mat<float> forward(Mat<float> &input) override;
     };
 
     class ReLU {
 
     };
 
-    class Sigmoid {
-
+    class Sigmoid : public Layer {
+    public:
+        Mat<float> forward(Mat<float> &input) override;
     };
 }
