@@ -12,9 +12,13 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
      * @param layer_names
      */
     layers = std::vector<Layer>();
-    for (const auto& name: layer_names) {
-        std::string bias_path = "/model_weights/" + name + "/" + name + "/bias:0";
-        std::string weights_path = "/model_weights/" + name + "/" + name + "/kernel:0";
+
+    for (const auto& name: names) {
+
+        std::cout << "Loading layer: " << name << "\n";
+
+        std::string bias_path = name + "_bias";
+        std::string weights_path = name + "_weights";
         Eigen::VectorXf bias;
         Eigen::MatrixXf weights;
         Module::read_2D_data_to_matrix(model_path, weights_path, weights);

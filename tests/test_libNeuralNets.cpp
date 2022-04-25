@@ -12,14 +12,12 @@ static constexpr char bias1_path[] = "/model_weights/dense_1/dense_1/bias:0";
 static constexpr char kernel1_path[] = "/model_weights/dense_1/dense_1/kernel:0";
 
 
-int main()
-{
-    std::vector<float> bias0_;
-    std::vector<std::vector<float>> kernel0_;
-    std::vector<float> bias1_;
-    std::vector<std::vector<float>> kernel1_;
-    std::string path = "libNeuralNets/trained_v1.h5";
-    std::vector<std::string> layers{"dense", "sigmoid", "dense", "sigmoid", "dense"};
+int main() {
+
+    std::cout << "hello world" << std::endl;
+
+    std::string path = "/Users/neilnie/model";
+    std::vector<std::string> layers{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
 
     Module neural_net = Module(path, layers);
 }
