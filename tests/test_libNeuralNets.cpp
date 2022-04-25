@@ -41,11 +41,22 @@ void test_mat_mult_add() {
     b(2, 0) = 30;
     b(2, 1) = 31;
 
+    /* Expected
+     * 140	146
+     * 320	335
+     *
+     */
     std::cout << c * b << std::endl;
 
     std::cout << a << std::endl;
     std::cout << c << std::endl;
 
+    /*
+     * Expected:
+     * 2	4	3
+     * 4	10 10
+     *
+     */
     std::cout << a + c << std::endl;
 }
 
