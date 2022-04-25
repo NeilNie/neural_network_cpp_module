@@ -13,7 +13,7 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
      * @param layer_names The names of the layers, which
      * should correspond to the file names on disk.
      */
-    layers = std::vector<Layer>();
+    layers = std::vector<Layer *>();
 
     for (const auto& name: names) {
 
@@ -29,11 +29,12 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
 
             Module::read_txt_data_to_matrix(model_path, weights_path, weights);
             Module::read_txt_data_to_matrix(model_path, bias_path, bias);
-            auto layer = Dense(name, weights, bias);
+            auto layer = new Dense(name, weights, bias);
             layers.push_back(layer);
         } else if  (name.find("sigmoid") != std::string::npos) {
             std::cout << "Loading layer: " << name << "\n";
-            auto layer = Sigmoid();
+            auto layer = new Sigmoid();
+            layer->name = name;
             layers.push_back(layer);
         } else {
             throw std::invalid_argument("Module constructor received invalid layer name");
@@ -45,6 +46,8 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
 Module::Module(std::vector<Layer> layers) {
 
 }
+
+
 
 nn::Mat<float> Module::forward(const nn::Mat<float> &input) {
 
@@ -63,7 +66,16 @@ nn::Mat<float> Module::forward(const nn::Mat<float> &input) {
                                  "initialized.");
 
     nn::Mat<float> value = input;
-    for (auto layer: layers)
-        value = layer.forward(value);
+    for (auto layer: layers) {
+        std::cout << "layer name: " << layer->name << "\n";
+        value = layer->forward(value);
+    }
+    std::cout << value << "\n";
     return value;
+}
+
+Module::~Module() {
+    for (auto layer: layers) {
+        delete layer;
+    }
 }
