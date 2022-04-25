@@ -9,12 +9,15 @@ module;
 
 #include <H5Cpp.h>
 
+import <string>;
 import <iostream>;
 import <vector>;
 import <memory>;
 import <ostream>;
 
 module LibNeuralNets;
+
+using namespace nn;
 
 static constexpr char bias0_path[] = "/model_weights/dense/dense/bias:0";
 static constexpr char kernel0_path[] = "/model_weights/dense/dense/kernel:0";
@@ -37,8 +40,7 @@ static void read_1D_data(const std::string& path, std::vector<float>& out)
 }
 
 template <const char *DataPath>
-static void read_2D_data(const std::string& path,
-                         std::vector<std::vector<float>>& out)
+static void read_2D_data(const std::string& path, Mat<float>& out)
 {
     H5::H5File file(path.c_str(), H5F_ACC_RDONLY);
     H5::DataSet dataset = file.openDataSet(DataPath);
@@ -46,17 +48,12 @@ static void read_2D_data(const std::string& path,
 
     hsize_t dims[dataspace.getSimpleExtentNdims()];
     dataspace.getSimpleExtentDims(dims);
-    std::unique_ptr<float[]> data(new float[dims[0] * dims[1]]);
-    dataset.read(data.get(), H5::PredType::IEEE_F32LE);
+    out.resize(dims[0], dims[1]);
+    dataset.read(&*out.begin(), H5::PredType::IEEE_F32LE);
 
     dataspace.close();
     dataset.close();
     file.close();
-
-    out.resize(dims[0]);
-    for (size_t i = 0; i < out.size(); ++i)
-        out[i].insert(out[i].end(),
-                      data.get() + i*dims[1], data.get() + (i+1)*dims[1]);
 }
 
 Module::Module(std::string path)
