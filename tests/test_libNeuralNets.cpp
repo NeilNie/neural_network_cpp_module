@@ -12,19 +12,19 @@ int main(int argc, char **argv)
         std::cerr << "Usage: " << argv[0] << " <h5>\n";
         return 1;
     }
-    Module mod(argv[1]);
+    nn::Module mod(argv[1]);
     std::cout << "dense bias: \n";
     for (auto val : mod.bias0())
         std::cout << val << '\n';
     std::cout << "\ndense kernel: \n";
-    for (const auto& vec : mod.kernel0())
-        for (auto val : vec)
-            std::cout << val << '\n';
+    std::cout << mod.kernel0() << '\n';
     std::cout << "\ndense_1 bias: \n";
     for (auto val : mod.bias1())
         std::cout << val << '\n';
     std::cout << "\ndense_1 kernel: \n";
-    for (const auto& vec : mod.kernel1())
-        for (auto val : vec)
-            std::cout << val << '\n';
+    std::cout << mod.kernel1() << '\n';
+    std::cout << "\nmulted: \n";
+    std::cout << (mod.kernel1() * nn::Mat<float>(mod.kernel1().n_rows(), mod.kernel1().n_cols(), 2)) << '\n';
+    std::cout << "\nadded: \n";
+    std::cout << (mod.kernel1() + nn::Mat<float>(mod.kernel1().n_rows(), mod.kernel1().n_cols(), 2)) << '\n';
 }

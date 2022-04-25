@@ -10,6 +10,7 @@ MODS_DIR = gcm.cache
 hash := \# # escaping '#' inline seems to break things on Linux
 sed_sys_mods = $(shell sed -En 's/^[[:space:]]*import[[:space:]]+<(.*)>[[:space:]]*\;/\1/p' $(1) 2> /dev/null)
 sed_local_mods = $(shell sed -En 's/^[[:space:]]*(import|module)[[:space:]]+([[:alpha:]].*)[[:space:]]*\;/\2/p' $(1) 2> /dev/null)
+sed_export_mods = $(shell sed -En 's/^[[:space:]]*export[[:space:]]+module[[:space:]]+([[:alpha:]].*)[[:space:]]*\;/\1/p' $(1) 2> /dev/null)
 grep_mod_exporter = $(shell grep -REl '^[[:space:]]*export[[:space:]]+module[[:space:]]+$(1)[[:space:]]*\;' . | head -n1)
 
 find_sys_dir = $(shell echo '$(hash)include<$(mod)>' | g++-11 -M -xc++ - | tr " " "\n" | grep -E '/$(mod)$$')
@@ -22,9 +23,9 @@ $(MODS_DIR)//%.gcm: # double forward-slash hack distinguishes system headers (wh
 .SECONDEXPANSION:
 $(MODS_DIR)/%.gcm : $$(call grep_mod_exporter,$$*) $$(call parse_mod_deps,$$(call grep_mod_exporter,$$*))	
 	$(eval EXPORTER := $(call grep_mod_exporter,$(basename $(notdir $@))))
-	# hack needed because the compiled module seems to break if relevant precompiled system headers are still present
-	for SYSINC in $$(sed -En 's/^[[:space:]]*#include[[:space:]]+<(.*)>[[:space:]]*$$/\1/p' $(EXPORTER)); do find $(MODS_DIR)/*/ -name $$SYSINC.gcm -exec rm {} \; ; done
-	$(CXX) $(CXXFLAGS)   -c -o $(patsubst %.cpp,%.o,$(EXPORTER)) $(EXPORTER)
+	@# hack needed because the compiled module seems to break if relevant precompiled system headers are still present
+	@for SYSINC in $$(sed -En 's/^[[:space:]]*#include[[:space:]]+<(.*)>[[:space:]]*$$/\1/p' $(EXPORTER)); do find $(MODS_DIR)/*/ -name $$SYSINC.gcm -exec rm {} \; ; done
+	$(CXX) $(CXXFLAGS) -fmodule-only   -c $(EXPORTER)
 
 LIB_SOURCE = $(shell find src -name '*.cpp')
 LIB_OBJECTS = $(LIB_SOURCE:.cpp=.o)
@@ -43,7 +44,7 @@ tests: $(TESTS)
 
 $(TESTS) : % : %.o $(LIB)
 
-$(OBJECTS) : %.o : $$(call parse_mod_deps,$$*.cpp)
+$(OBJECTS) : %.o : %.cpp $$(addprefix $$(MODS_DIR)/, $$(addsuffix .gcm, $$(call sed_export_mods,$$*.cpp))) $$(call parse_mod_deps,$$*.cpp)
 
 .PHONY: clean
 clean:
