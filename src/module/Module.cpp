@@ -15,12 +15,13 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
 
     for (const auto& name: names) {
 
-        std::cout << "Loading layer: " << name << "\n";
-
         std::string bias_path = name + "_bias.txt";
         std::string weights_path = name + "_weights.txt";
 
         if (name.find("dense") != std::string::npos) {
+
+            std::cout << "Loading layer: " << name << "\n";
+
             Eigen::MatrixXf bias;
             Eigen::MatrixXf weights;
 
@@ -29,6 +30,7 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
             auto layer = Dense(name, weights, bias);
             layers.push_back(layer);
         } else if  (name.find("sigmoid") != std::string::npos) {
+            std::cout << "Loading layer: " << name << "\n";
             auto layer = Sigmoid();
             layers.push_back(layer);
         } else {
