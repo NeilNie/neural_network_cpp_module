@@ -41,6 +41,16 @@ export namespace nn {
         {
             return const_cast<Mat&>(*this)(row, col);
         }
+        Mat<T>& operator+=(const Mat<T>& other);
+        Mat<T>& operator*=(const Mat<T>& other);
+        friend Mat<T> operator+(Mat<T> l, const Mat<T>& r)
+        {
+            return l += r;
+        }
+        friend Mat<T> operator*(Mat<T> l, const Mat<T>& r)
+        {
+            return l *= r;
+        }
         friend std::ostream& operator<< <>(std::ostream& os, const Mat& mat);
         friend bool operator== <>(const Mat& mat1, const Mat& mat2);
         friend bool operator!=(const Mat& mat1, const Mat& mat2)
@@ -184,6 +194,26 @@ export namespace nn {
         }
 
         return true;
+    }
+
+    template <class T>
+    Mat<T>& Mat<T>::operator+=(const Mat<T>& other)
+    {
+        auto end = std::min(size(), other.size());
+        for (auto i = 0; i < end; ++i)
+            data_[i] += other.data_[i];
+        return *this;
+    }
+
+    template <class T>
+    Mat<T>& Mat<T>::operator*=(const Mat<T>& other)
+    {
+        auto end = std::min(cols_, other.rows_);
+        for (auto i = 0; i < rows_; ++i)
+            for (auto j = 0; j < other.cols_; ++j)
+                for (auto k = 0; k < end; ++k)
+                    (*this)(i, k) *= other(k, j);
+        return *this;
     }
 
     template <class T>

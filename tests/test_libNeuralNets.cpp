@@ -23,4 +23,8 @@ int main(int argc, char **argv)
         std::cout << val << '\n';
     std::cout << "\ndense_1 kernel: \n";
     std::cout << mod.kernel1() << '\n';
+    std::cout << "\nmulted: \n";
+    std::cout << (mod.kernel1() * nn::Mat<float>(mod.kernel1().n_rows(), mod.kernel1().n_cols(), 2)) << '\n';
+    std::cout << "\nadded: \n";
+    std::cout << (mod.kernel1() + nn::Mat<float>(mod.kernel1().n_rows(), mod.kernel1().n_cols(), 2)) << '\n';
 }
