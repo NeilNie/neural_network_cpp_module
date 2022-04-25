@@ -10,7 +10,7 @@
 class Sigmoid: public Layer {
 
 public:
-    Eigen::MatrixX<float> forward(Eigen::MatrixX<float> &input) override;
+    nn::Mat<float> forward(nn::Mat<float> &input) override;
 };
 
 

@@ -26,12 +26,12 @@ public:
     std::vector<Layer> layers;
     explicit Module(const std::string& model_path, const std::vector<std::string>& names);
     explicit Module(std::vector<Layer> layers);
-    Eigen::MatrixXf forward(const Eigen::MatrixXf& input);
+    nn::Mat<float> forward(const nn::Mat<float>& input);
 
-    static void read_2D_data_to_matrix(
+    static void read_txt_data_to_matrix(
             const std::string& path,
             const std::string& data_path,
-            Eigen::MatrixX<float>& out,
+            nn::Mat<float>& out,
             bool verbose=true) {
 
         if (verbose) {
@@ -60,29 +60,17 @@ public:
             count++;
         }
 
-        if (verbose) {
+        if (verbose)
             std::cout << "matrix rows: " << rows << " columns: " << cols << "\n";
-        }
 
         out.resize(rows, cols);
 
-        for (Eigen::Index i = 0; i < out.rows(); i++) {
-            for (Eigen::Index j = 0; j < out.cols(); j++) {
-                out(0, 0) = data[i * out.cols() + j]; //
-            }
-        }
+        for (auto i = 0; i < out.n_rows(); i++)
+            for (auto j = 0; j < out.n_cols(); j++)
+                out(0, 0) = data[i * out.n_cols() + j]; //
 
-        if (verbose) {
+        if (verbose)
             std::cout << "Finished loading" << "\n";
-        }
-    }
-
-    static void read_1D_vector(
-            const std::string& path,
-            const std::string& data_path,
-            Eigen::VectorXf& out_vector) {
-
-
     }
 };
 

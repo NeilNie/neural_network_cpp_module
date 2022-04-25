@@ -14,11 +14,11 @@ public:
 
     // instance initializer
     Dense(const std::string& layer_name,
-          const Eigen::MatrixXf &init_weights,
-          const Eigen::VectorXf &init_biases);
+          const nn::Mat<float> &init_weights,
+          const nn::Mat<float> &init_biases);
 
     // forward method override
-    Eigen::MatrixX<float> forward(Eigen::MatrixX<float> &input) override;
+    nn::Mat<float> forward(nn::Mat<float> &input) override;
 
 };
 

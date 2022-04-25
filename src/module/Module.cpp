@@ -8,8 +8,10 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
 
     /**
      *
-     * @param model_path
-     * @param layer_names
+     * @param model_path Path to the directory that contains
+     * the model weights saved as txt files.
+     * @param layer_names The names of the layers, which
+     * should correspond to the file names on disk.
      */
     layers = std::vector<Layer>();
 
@@ -22,11 +24,11 @@ Module::Module(const std::string& model_path, const std::vector<std::string>& na
 
             std::cout << "Loading layer: " << name << "\n";
 
-            Eigen::MatrixXf bias;
-            Eigen::MatrixXf weights;
+            nn::Mat<float> bias;
+            nn::Mat<float> weights;
 
-            Module::read_2D_data_to_matrix(model_path, weights_path, weights);
-            Module::read_2D_data_to_matrix(model_path, bias_path, bias);
+            Module::read_txt_data_to_matrix(model_path, weights_path, weights);
+            Module::read_txt_data_to_matrix(model_path, bias_path, bias);
             auto layer = Dense(name, weights, bias);
             layers.push_back(layer);
         } else if  (name.find("sigmoid") != std::string::npos) {
@@ -44,7 +46,7 @@ Module::Module(std::vector<Layer> layers) {
 
 }
 
-Eigen::MatrixXf Module::forward(const Eigen::MatrixXf &input) {
+nn::Mat<float> Module::forward(const nn::Mat<float> &input) {
 
     /**
      *
@@ -60,7 +62,7 @@ Eigen::MatrixXf Module::forward(const Eigen::MatrixXf &input) {
                                  "variable has not been "
                                  "initialized.");
 
-    Eigen::MatrixXf value = input;
+    nn::Mat<float> value = input;
     for (auto layer: layers)
         value = layer.forward(value);
     return value;

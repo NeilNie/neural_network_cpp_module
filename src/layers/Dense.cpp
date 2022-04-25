@@ -6,27 +6,27 @@
 #include <Eigen/Dense>
 #include "../../include/libNeuralNets/layers/Dense.h"
 
-Eigen::MatrixX<float> Dense::forward(Eigen::MatrixX<float> &input) {
+nn::Mat<float> Dense::forward(nn::Mat<float> &input) {
 
     if (weights.size() == 0 || biases.size() == 0) {
         throw std::runtime_error("Dense layer weights and/or biases not initialized");
     }
 
     // check for sizes
-    if (input.rows() != weights.rows()) {
+    if (input.n_rows() != weights.n_cols()) {
         throw std::invalid_argument("Input matrix size and weights size mismatch");
     }
 
     // matrix multiply
-    Eigen::MatrixX<float> output = weights.transpose() * input + biases;
+    nn::Mat<float> output = weights.t() * input + biases;
 
     // return
     return output;
 }
 
 Dense::Dense(const std::string& layer_name,
-             const Eigen::MatrixXf &init_weights,
-             const Eigen::VectorXf &init_biases) {
+             const nn::Mat<float> &init_weights,
+             const nn::Mat<float> &init_biases) {
 
     name = layer_name;
     weights = init_weights;
