@@ -3,7 +3,6 @@
 //
 
 
-#include <Eigen/Dense>
 #include "../../include/libNeuralNets/layers/Dense.h"
 
 nn::Mat<float> Dense::forward(nn::Mat<float> &input) {
