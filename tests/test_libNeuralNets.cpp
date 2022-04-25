@@ -10,7 +10,12 @@ int main() {
     std::string path = "/Users/neilnie/model/";
     std::vector<std::string> layers{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
 
+    nn::Mat<float> input(784, 1, 0);
     Module neural_net = Module(path, layers);
+
+     std::cout << "Running forward feed..." << "\n";
+     auto output = neural_net.forward(input);
+     std::cout << "Finished" << "\n";
 }
 
 void test_mat_mult() {
