@@ -4,19 +4,19 @@
 
 module LibNeuralNets;
 
+import <iostream>;
 import <stdexcept>;
 
 using namespace nn;
 
-Mat<float> Dense::forward(Mat<float> &input) {
-
+Mat<float> Dense::forward(const Mat<float> &input) const
+{
     // check for sizes
-    if (input.n_rows() != weights.n_rows()) {
+    if (input.n_rows() != weights_.n_rows())
         throw std::invalid_argument("Input matrix size and weights size mismatch");
-    }
 
     // matrix multiply
-    Mat<float> output = weights.t() * input + biases;
+    Mat<float> output = weights_.t() * input + biases_;
 
     // return
     return output;

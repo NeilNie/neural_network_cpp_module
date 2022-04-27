@@ -1,7 +1,8 @@
 CXX = g++-11
 CC = g++-11
 INCLUDES = -I /opt/homebrew/include -I externals/HighFive/include -I externals/H5Easy
-CXXFLAGS = -std=c++20 -O0 -fmodules-ts $(shell pkg-config --cflags hdf5 2> /dev/null) $(INCLUDES)
+CXXFLAGS = -std=c++20 -O2 -fmodules-ts -D_GLIBCXX_USE_CXX11_ABI=0 $(shell pkg-config --cflags hdf5 2> /dev/null) $(INCLUDES)
+# CXXFLAGS = -std=c++20 -O0 -fsanitize=address -fmodules-ts -D_GLIBCXX_USE_CXX11_ABI=0 $(shell pkg-config --cflags hdf5 2> /dev/null) $(INCLUDES)
 LDLIBS = -lhdf5 -lhdf5_cpp
 LDFLAGS = -L /opt/homebrew/lib $(shell pkg-config --libs-only-L --libs-only-other hdf5 2> /dev/null)
 
@@ -21,11 +22,12 @@ $(MODS_DIR)//%.gcm: # double forward-slash hack distinguishes system headers (wh
 	$(CXX) $(CXXFLAGS)   -xc++-system-header $(basename $(notdir $@))
 
 .SECONDEXPANSION:
-$(MODS_DIR)/%.gcm : $$(call grep_mod_exporter,$$*) $$(call parse_mod_deps,$$(call grep_mod_exporter,$$*))	
+pc := %
+$(MODS_DIR)/%.gcm : $$(patsubst $$(pc).cpp,$$(pc).o,$$(call grep_mod_exporter,$$*))
 	$(eval EXPORTER := $(call grep_mod_exporter,$(basename $(notdir $@))))
 	@# hack needed because the compiled module seems to break if relevant precompiled system headers are still present
-	@for SYSINC in $$(sed -En 's/^[[:space:]]*#include[[:space:]]+<(.*)>[[:space:]]*$$/\1/p' $(EXPORTER)); do find $(MODS_DIR)/*/ -name $$SYSINC.gcm -exec rm {} \; ; done
-	$(CXX) $(CXXFLAGS) -fmodule-only   -c $(EXPORTER)
+	@for SYSINC in $$(sed -En 's/^[[:space:]]*#include[[:space:]]+<(.*)>[[:space:]]*$$/\1/p' $(EXPORTER)); do find $(MODS_DIR)/*/ -name $$SYSINC.gcm -exec rm {} \; || true; done
+	$(CXX) $(CXXFLAGS) -fmodule-only   -c $(call grep_mod_exporter,$(basename $(notdir $@)))
 
 LIB_SOURCE = $(shell find src -name '*.cpp')
 LIB_OBJECTS = $(LIB_SOURCE:.cpp=.o)
@@ -44,7 +46,7 @@ tests: $(TESTS)
 
 $(TESTS) : % : %.o $(LIB)
 
-$(OBJECTS) : %.o : %.cpp $$(addprefix $$(MODS_DIR)/, $$(addsuffix .gcm, $$(call sed_export_mods,$$*.cpp))) $$(call parse_mod_deps,$$*.cpp)
+$(OBJECTS) : %.o : %.cpp $$(call parse_mod_deps,$$*.cpp)
 
 .PHONY: clean
 clean:
