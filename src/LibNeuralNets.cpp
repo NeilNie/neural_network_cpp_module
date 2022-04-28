@@ -178,6 +178,10 @@ public:
     // transpose
     Mat t() const;
 
+    std::vector<T> vector()
+    {
+        return data_;
+    }
     T *data()
     {
         return data_.data();

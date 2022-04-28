@@ -92,7 +92,6 @@ Mat<float> Module::forward(const Mat<float>& input) const
         std::cout << "layer name: " << layer->name() << "\n";
         value = layer->forward(value);
     }
-    std::cout << value << "\n";
     return value;
 }
 
