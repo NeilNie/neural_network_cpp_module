@@ -36,6 +36,63 @@ public:
         : data_(rows*cols, fill), rows_(rows), cols_(cols)
     {}
 
+    explicit Mat(const char* full_path)
+    {
+        load_from_txt(full_path);
+    }
+
+    void load_from_txt(const char* full_path)
+    {
+        /**
+         * Load a matrix given a file path to a txt
+         * in our proprietary format.
+         */
+
+#ifndef NDEBUG
+        std::cout << "loading from file: " << full_path << "\n";
+#endif
+        // using C stdio instead of std::fstream because the later seems to incur
+        // internal compiler error in a module
+        FILE *file = std::fopen(full_path, "r");
+        if (file == nullptr)
+            throw std::system_error(errno, std::generic_category());
+        int count = 0;
+
+        int rows, cols;
+        std::vector<float> data;
+        char *line = nullptr;
+        size_t n = 0;
+        while (::getline(&line, &n, file) != -1) {
+            float line_data = std::strtof(line, nullptr);
+            if (count == 0) {
+                rows = (int) line_data;
+            } else if (count == 1) {
+                cols = (int) line_data;
+            } else {
+                data.push_back(line_data);
+            }
+            count++;
+        }
+        std::free(line);
+        bool ferr = std::ferror(file);
+        std::fclose(file);
+        if (ferr)
+            throw std::system_error(errno, std::generic_category());
+
+#ifndef NDEBUG
+        std::cout << "matrix rows: " << rows << " columns: " << cols << "\n";
+#endif
+        resize(rows, cols);
+
+        for (auto i = 0; i < n_rows(); i++)
+            for (auto j = 0; j < n_cols(); j++)
+                (*this)(i, j) = data[i * n_cols() + j]; //
+
+#ifndef NDEBUG
+        std::cout << "Finished loading" << "\n";
+#endif
+    }
+
     // operators
     T& operator()(size_t row, size_t col)
     {
