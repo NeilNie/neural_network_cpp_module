@@ -7,17 +7,17 @@ import <iostream>;
 import <string>;
 import LibNeuralNets;
 
-int main(int argc, char **argv)
-{
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <path>\n";
+int main(int argc, char **argv) {
+
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <model path> <input image txt>\n";
         return 1;
     }
     std::string path = argv[1];
-    std::vector<std::string> layers{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
+    std::vector<std::string> layer_names{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
 
-    nn::Mat<float> input(784, 1, 0);
-    nn::Module neural_net(path, layers);
+    nn::Mat<float> input(argv[2]);
+    nn::Module neural_net(path, layer_names);
 
     std::cout << "Running forward feed...\n";
     auto output = neural_net.forward(input);
@@ -66,14 +66,3 @@ void test_mat_mult_add() {
 
     std::cout << a + c << std::endl;
 }
-
-/**
-int main() {
-
-    std::string path = "/Users/shannon/Documents/COMSW4995_final_project/data/model/";
-    std::vector<std::string> layers{"dense_1", "sigmoid_1", "dense_2", "sigmoid_2", "dense_3"};
-
-    Module neural_net = Module(path, layers);
-}
-*/
-
