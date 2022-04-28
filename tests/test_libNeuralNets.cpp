@@ -20,8 +20,11 @@ int main(int argc, char **argv) {
     nn::Module neural_net(path, layer_names);
 
     std::cout << "Running forward feed...\n";
-    auto output = neural_net.forward(input);
-    std::cout << "Finished\n" << output;
+    auto output = neural_net.forward(input).vector();
+    std::cout << "Finished\n";
+
+    int predDigit = static_cast<int>(std::distance(output.begin(), max_element(output.begin(), output.end())));
+    std::cout << "Predicted digit: " << predDigit << "\n";
 }
 
 void test_mat_mult_add() {
