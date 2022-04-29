@@ -8,7 +8,7 @@ import <cmath>;
 
 using namespace nn;
 
-Mat<float> Sigmoid::forward(const Mat<float> &input) const
+Mat<float> Sigmoid::forward(const Mat<float>& input) const
 {
     /**
      *

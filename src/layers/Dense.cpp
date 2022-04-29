@@ -9,7 +9,7 @@ import <stdexcept>;
 
 using namespace nn;
 
-Mat<float> Dense::forward(const Mat<float> &input) const
+Mat<float> Dense::forward(const Mat<float>& input) const
 {
     // check for sizes
     if (input.n_rows() != weights_.n_rows())
