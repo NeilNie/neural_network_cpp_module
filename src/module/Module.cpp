@@ -4,10 +4,8 @@
 
 module;
 
-// importing <vector> seems to breaks things on certain platforms
-#include <vector>
-
 import <iostream>;
+import <vector>;
 import <string>;
 import <stdexcept>;
 import <system_error>;
